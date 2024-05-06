@@ -1,6 +1,7 @@
 import argparse
 import os
 import pathlib
+import sys
 
 import openai
 import requests
@@ -15,25 +16,37 @@ DEFAULT_INSTRUCTIONS = "instructions"
 DEFAULT_TESSERACT_COMMAND = r'/opt/homebrew/bin/tesseract'
 
 
-def download_pdf(url: str, save_to: str) -> str | None:
+def download_pdf(url: str, save_to: str) -> str:
     """
-    Download a PDF from an URL
+    Downloads a PDF file from a specified URL and saves it to a designated directory.
 
     Args:
-        url: URL of the source
-        save_to: Directory to save the file to.  Default the current running directory
+        url (str): The URL from where the PDF file should be downloaded. The URL must point to a .pdf file,
+                   otherwise, a ValueError is raised.
+        save_to (str): The directory path where the PDF file will be saved. This directory must exist,
+                       otherwise, a FileNotFoundError is raised. If the directory is not specified, the
+                       current working directory is used.
 
-    Returns: The file path of the PDF saved, None if retrieval failed
+    Returns:
+        str: The full file path of the downloaded PDF if successful, None if the download fails.
+             A successful download returns the file path, while failures due to non-200 HTTP status
+             codes will raise an HTTPError with the reason for the failure.
 
+    Raises:
+        FileNotFoundError: Raised if the 'save_to' directory does not exist.
+        ValueError: Raised if the URL does not end in ".pdf".
+        requests.exceptions.HTTPError: Raised if the download fails due to server response issues.
+
+    Note:
+        The function checks if the response from the server is successful (HTTP status code 200) before
+        attempting to save the file. It handles writing the file in binary mode to preserve the PDF format.
     """
 
     if not os.path.exists(save_to):
-        print(f'Working directory {save_to} not exist')
-        return None
+        raise FileNotFoundError(f'Working directory {save_to} not exist')
 
     if pathlib.Path(url).suffix.lower() != ".pdf":
-        print(f"{url} may not point to a PDF file (not with a .pdf extension)")
-        return None
+        raise ValueError(f"{url} may not point to a PDF file (not with a .pdf extension)")
 
     # Request URL and get response object
     response = requests.get(url, stream=True)
@@ -48,8 +61,7 @@ def download_pdf(url: str, save_to: str) -> str | None:
             pdf_object.write(response.content)
             return pdf_file_name
     else:
-        print(f'Failed to download {url} (response.status_code)')
-        return None
+        raise requests.exceptions.HTTPError(f'Failed to download {url} ({response.status_code})')
 
 
 def pdf2text(pdf_file: str, working_dir: str) -> str:
@@ -264,7 +276,7 @@ def parse_arguments() -> argparse.Namespace:
     except argparse.ArgumentError as e:
         # If an error occurs during argument parsing, print the error message and exit
         print(e)
-        raise
+        sys.exit(1)
 
 
 def requirements_satisfied(args) -> None:
@@ -317,7 +329,11 @@ def main():
     args = parse_arguments()
 
     # Ensure all system requirements and dependencies are satisfied
-    requirements_satisfied(args)
+    try:
+        requirements_satisfied(args)
+    except AttributeError as e:
+        print(f"Missing requirements: {e}")
+        return
 
     # Ensure all system requirements and dependencies are satisfied
     if not os.path.exists(args.workdir):
@@ -325,31 +341,39 @@ def main():
         os.makedirs(args.workdir)
 
     # Download the PDF from the specified URL to the working directory
-    downloaded_pdf = download_pdf(args.url, save_to=args.workdir)
-    if not downloaded_pdf:
-        print(f"Failed to download PDF {args.url}")
-        return False
+    try:
+        downloaded_pdf = download_pdf(args.url, save_to=args.workdir)
+    except Exception as e:
+        print(f"Failed to download PDF from {args.url}. {e}")
+        return
 
     # Extract text from the downloaded PDF using OCR if necessary
     extracted_text = pdf2text(downloaded_pdf, working_dir=args.workdir)
     if not extracted_text:
-        print(f"Failed to extract text from PDF {args.url}")
-        return False
+        print(f"Failed to extract text from PDF {downloaded_pdf}")
+        return
 
     # Convert the extracted text to JSON format using specified attributes and instructions
-    json = text2json(
-        extracted_text,
-        attribute_file=args.attributes,
-        instruction_file=args.instructions,
-        model=args.model,
-    )
+    try:
+        json = text2json(
+            extracted_text,
+            attribute_file=args.attributes,
+            instruction_file=args.instructions,
+            model=args.model,
+        )
+    except Exception as e:
+        print(f"Failed to extract information from {extracted_text}. {e}")
+        return
 
     # If a JSON output file is specified, write the JSON to that file; otherwise, print to stdout
-    if args.json:
-        with open(args.json, "w") as fp:
-            fp.write(json)
-    else:
-        print(json)
+    try:
+        if args.json:
+            with open(args.json, "w") as fp:
+                fp.write(json)
+        else:
+            print(json)
+    except IOError as e:
+        print(f"Failed to write to output file {args.json}. {e}")
 
 
 if __name__ == '__main__':
