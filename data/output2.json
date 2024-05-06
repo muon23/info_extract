@@ -1,0 +1,30 @@
+[
+{
+"property": 
+    {
+        "address": "64 S Park Street, San Francisco, CA 94107",
+        "rentable_area": "410,000 SF",
+        "net_operating_income": "N/A",
+        "land_area": "0.5 Acres",
+        "cap_rate": "N/A",
+        "year_built": "2006",
+        "sale_price": "$2,000,000",
+        "tenancy": "Multiple",
+        "expiration_date": "N/A",
+        "tax_key": "N/A",
+        "taxes_2021": "N/A",
+        "municipality": "San Francisco"
+    },
+"lease_details":
+    {
+        "annual_base_rent": "N/A",
+        "common_area_maintenance": "N/A",
+        "insurance": "N/A",
+        "real_estate_taxes": "$956,420",
+        "expiration_date": "N/A",
+        "base_rent_increase": "N/A",
+        "options": "N/A",
+        "grantor": "Kristopher Krisco and Kevin Reed"
+    }
+}
+]

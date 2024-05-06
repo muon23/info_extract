@@ -1,0 +1,54 @@
+[
+{
+    "property": {
+        "address": "1401 N CASALOMA DR, APPLETON, WI",
+        "rentable_area": "7,609 SF",
+        "net_operating_income": "$102,000",
+        "land_area": "±1.32 AC",
+        "cap_rate": "6.75%",
+        "year_built": "1975",
+        "sale_price": "$1,511,111",
+        "tenancy": "Single",
+        "expiration_date": "12-31-2033",
+        "tax_key": "101086805",
+        "taxes2021": "$12,099.79",
+        "municipality": "Town of Grand Chute"
+    },
+    "lease_details": {
+        "annual_base_rent": "$102,000",
+        "common_area_maintenance": "Paid directly by Tenant",
+        "insurance": "Paid directly by Tenant",
+        "real_estate_taxes": "Reimbursed monthly by Tenant",
+        "expiration_date": "12-31-2033",
+        "base_rent_increase": "$6,000 Annual Rent Increase Starting January 1st 2027",
+        "options": "Three (3) - Three (3) Year Options with 3% Annual Increases",
+        "grantor": "Brandon Fitness"
+    }
+},
+{
+    "property": {
+        "address": "W3171 SPRINGFIELD DR, APPLETON, WI",
+        "rentable_area": "6,528 SF",
+        "net_operating_income": "$102,000",
+        "land_area": "±0.72 AC",
+        "cap_rate": "6.75%",
+        "year_built": "2017",
+        "sale_price": "$1,511,111",
+        "tenancy": "Single",
+        "expiration_date": "12-31-2033",
+        "tax_key": "030264601",
+        "taxes2021": "$13,444.08",
+        "municipality": "Town of Buchanan"
+    },
+    "lease_details": {
+        "annual_base_rent": "$102,000",
+        "common_area_maintenance": "Paid directly by Tenant",
+        "insurance": "Paid directly by Tenant",
+        "real_estate_taxes": "Reimbursed monthly by Tenant",
+        "expiration_date": "12-31-2033",
+        "base_rent_increase": "$6,000 Annual Rent Increase Starting January 1st 2027",
+        "options": "Three (3) - Three (3) Year Options with 3% Annual Increases",
+        "grantor": "Brandon Fitness"
+    }
+}
+]
