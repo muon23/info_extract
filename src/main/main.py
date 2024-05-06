@@ -15,6 +15,8 @@ DEFAULT_WORKING_DIR = ".pdfextract"
 DEFAULT_INSTRUCTIONS = "instructions"
 DEFAULT_TESSERACT_COMMAND = r'/opt/homebrew/bin/tesseract'
 
+ocr_exist = False  # We will check if Tesseract is installed locally later in the code
+
 
 def download_pdf(url: str, save_to: str) -> str:
     """
@@ -106,6 +108,10 @@ def pdf2text(pdf_file: str, working_dir: str) -> str:
     for p, page in enumerate(doc):
         # Extract text from the current page
         text += page.get_text()
+
+        # If we don't have OCR, continue to the next page
+        if not ocr_exist:
+            continue
 
         # Retrieve all images from the current page
         images = page.get_images()
@@ -310,12 +316,13 @@ def requirements_satisfied(args) -> None:
 
     # Raise an error if Tesseract command is not found at the specified or default path
     if not tesseract or not os.path.exists(tesseract):
-        raise AttributeError(
-            "Tesseract command not found.  (Install Tesseract and specify its path with --tesseract argument.)"
-        )
-
-    # Configure pytesseract to use the specified Tesseract command
-    pytesseract.tesseract_cmd = tesseract
+        print("WARNING: Tesseract command not found.  Text in images will be ignored.")
+        print("    (Install Tesseract and specify its path with --tesseract argument.)")
+    else:
+        # Configure pytesseract to use the specified Tesseract command
+        pytesseract.tesseract_cmd = tesseract
+        global ocr_exist
+        ocr_exist = True
 
 
 def main():
