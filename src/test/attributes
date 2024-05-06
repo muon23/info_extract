@@ -1,0 +1,23 @@
+    Property:
+     - Address
+     - RentableArea
+     - NetOperatingIncome
+     - LandArea
+     - CapRate: string
+     - YearBuilt
+     - SalePrice
+     - Tenancy
+     - ExpirationDate
+     - TaxKey
+     - Taxes2021
+     - Municipality
+
+    LeaseDetails:
+     - AnnualBaseRent
+     - CommonAreaMaintenance
+     - Insurance:
+     - RealEstateTaxes
+     - ExpirationDate
+     - BaseRentIncrease
+     - Options
+     - Grantor

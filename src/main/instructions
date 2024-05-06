@@ -1,0 +1,4 @@
+As an array of properties.
+Lease details as an element of the property.
+Make attribute names in lower case underscore format.
+Use "N/A" if the attribute is not specified.
